@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-from app.extensions import db, migrate
+from app.extensions import db, migrate,jwt
+from app.controllers.auth.auth_controllers import auth
 #application factory function
 def create_app():
     app = Flask(__name__)
@@ -8,12 +9,15 @@ def create_app():
 
     db.init_app(app)
     migrate.init_app(app,db)
+    jwt.init_app(app)
     
 #migrating models
     from app.models.author_model import Author
     from app.models.company_model import Company
     from app.models.book_model import Book
 
+
+    app.register_blueprint(auth)
     #index route
     @app.route('/')
 
