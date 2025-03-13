@@ -15,7 +15,6 @@ auth = Blueprint('auth',__name__,url_prefix='/api/v1/auth')
 @auth.route('/register', methods=['POST'])
 def register_author():
     data = request.json
-    id = data.get('id')
     first_name = data.get('first_name')
     last_name = data.get('last_name')
     contact = data.get('contact')
@@ -29,7 +28,7 @@ def register_author():
     if not first_name or not last_name or not password or not email:
         return jsonify({"error":"All fields are required"}), HTTP_400_BAD_REQUEST
    
-    if not biography == "author"  and not biography:
+    if not biography == "Author"  and not biography:
         return jsonify({"error":"Enter your author biography"}),HTTP_400_BAD_REQUEST
     
     if len(password)< 8:
@@ -46,7 +45,7 @@ def register_author():
         return jsonify({"error":"Contact already in use"}),HTTP_409_CONFLICT 
     
     try:
-        hashed_password = bcrypt.generate_password_hash(password)
+        hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
 
         #creating a new user
         new_user = Author(first_name=first_name,last_name=last_name,password= hashed_password,email=email,contact=contact,biography=biography)
@@ -56,9 +55,8 @@ def register_author():
         User_name = new_user.get_full_name()
 
         return jsonify ({
-            'message':User_name + "has been successfully created as an" + new_user.Type,
+            'message':User_name + "has been successfully created as an" + new_user.biography,
             'User':{
-                "id":new_user.id,
                 "first_name":new_user.first_name,
                 "last_name":new_user.last_name,
                 "password":new_user.password,
@@ -89,20 +87,20 @@ def login():
         if not email or not password:
             return jsonify ({"message":"email and password are required"}),HTTP_400_BAD_REQUEST
         
-        user = Author.query.filter_by(email=email).first()
+        author = Author.query.filter_by(email=email).first()
 
-        if user:
-            is_correct_password = bcrypt.check_password_hash(Author.password,password)
+        if author:
+            is_correct_password = bcrypt.check_password_hash(author.password,password)
         
             if is_correct_password:
-               access_token = create_access_token(identity=user.id)
-               refresh_token =create_refresh_token(identity=user.id)
+               access_token = create_access_token(identity=author.id)
+               refresh_token =create_refresh_token(identity=author.id)
 
                return jsonify({
-    'user': {
-        'id': user.id,
-        'username': Author.get_full_name(),
-        'email': Author.email,
+    'author': {
+        'id': author.id,
+        'username': author.get_full_name(),
+        'email': author.email,
         'access_token': access_token,
         'refresh_token': refresh_token
     }
@@ -127,6 +125,7 @@ def login():
 @auth.route("token/refresh", methods=["POST"])
 @jwt_required(refresh=True)
 def refresh():
-    identity = get_jwt_identity()
+    identity =str(get_jwt_identity())
     access_token = create_access_token(identity=identity)
-    return jsonify({'access_token':access_token})
+    return jsonify({'access_token':access_token}),HTTP_200_OK
+
