@@ -3,7 +3,7 @@ from app.status_codes import HTTP_400_BAD_REQUEST,HTTP_409_CONFLICT,HTTP_500_INT
 import validators
 from app.models.author_module import Author
 from app.extensions import db,bcrypt
-from flask_jwt_extended import create_access_token
+from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required, create_refresh_token
 
 #auth blueprint
 auth = Blueprint('auth', __name__,
@@ -94,7 +94,8 @@ def login():
         if author:
             # is_correct_password = bcrypt.check_password_hash(author.password,password)
             if bcrypt.check_password_hash(author.password, password):  # bcrypt's method
-                access_token = create_access_token(identity=author.author_id)
+                access_token = create_access_token(identity=str(author.author_id))
+                refresh_token = create_refresh_token(identity=str(author.author_id))
 
             # if is_correct_password:
             #     access_token = create_access_token(identity=author.author_id)
@@ -104,7 +105,8 @@ def login():
                  "author_id":author.author_id,
                  "authorname":author.get_full_name(),
                  "email":author.email,
-                 "access_token":access_token
+                 "access_token":access_token,
+                 "refresh_token":refresh_token
                 }    
                 }),HTTP_200_OK
             else:
@@ -120,3 +122,12 @@ def login():
         return  jsonify({
             "Error":str(e)
         }), HTTP_500_INTERNAL_SERVER_ERROR
+    
+
+#refresh token is a long-lived credential that is used to access a new access token after the current one expires
+@auth.route("token/refresh", methods=["POST"])
+@jwt_required(refresh=True) #this refresh=True boolean is used to generate for us a refresh token
+def refresh():
+    identity = get_jwt_identity() #this method (get_jwt_identity) gets the identity of the current logged in author
+    access_token = create_access_token(identity=identity) #flask_jwt_extended works with create_access_token function that takes in the identity of the author as a parameter 
+    return jsonify({"access_token" : access_token}),HTTP_200_OK
