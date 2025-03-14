@@ -1,30 +1,32 @@
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-from app.extensions import db, migrate,jwt
-from app.controllers.auth.auth_controllers import auth
-#application factory function
-def create_app():
-    app = Flask(__name__)
-    app.config.from_object("config.Config")
-    app.config['JWT_SECRET_KEY'] = 'your-secret-key'
+from app.extensions import db, migrate, jwt
+from app.controllers.auth.auth_controller import auth
 
-    db.init_app(app)
+
+def create_app(): #application factory function
+    app = Flask(__name__) #instance
+    app.config.from_object('config.Config') #registering the class
+
+    db.init_app(app) #initialization of our database instance on our app variable
     migrate.init_app(app,db)
     jwt.init_app(app)
-    
-#migrating models
-    from app.models.author_model import Author
-    from app.models.company_model import Company
-    from app.models.book_model import Book
 
 
+
+    #importing and registering models
+    from app.models.author_module import Author
+    from app.models.company_module import Company
+    from app.models.book_module import Book
+   
+
+    #registering blueprints
     app.register_blueprint(auth)
-    #index route
-    @app.route('/')
 
-    def index():
-        return "HELLO"
-        
+
+
+    @app.route('/')
+    def home():
+        return "This is my web application"
+
 
     return app
-
