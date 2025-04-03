@@ -2,7 +2,7 @@ from app.extensions import db
 from datetime import datetime
 class Book(db.Model):
     __tablename__ ="Book"
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True,autoincrement=True)
     title = db.Column(db.String(30))
     pages = db.Column(db.String(50))
     price = db.Column(db.String(50))

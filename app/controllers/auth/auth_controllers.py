@@ -93,8 +93,8 @@ def login():
             is_correct_password = bcrypt.check_password_hash(author.password,password)
         
             if is_correct_password:
-               access_token = create_access_token(identity=author.id)
-               refresh_token =create_refresh_token(identity=author.id)
+               access_token = create_access_token(identity= str(author.id))
+               refresh_token =create_refresh_token(identity= str(author.id))
 
                return jsonify({
     'author': {
@@ -103,7 +103,8 @@ def login():
         'email': author.email,
         'access_token': access_token,
         'refresh_token': refresh_token
-    }
+    }, 
+    "message":'you have succrssfully loged into your account'
 }), HTTP_200_OK
         
             else:
@@ -126,6 +127,6 @@ def login():
 @jwt_required(refresh=True)
 def refresh():
     identity =str(get_jwt_identity())
-    access_token = create_access_token(identity=identity)
+    access_token = create_access_token(identity=str(identity))
     return jsonify({'access_token':access_token}),HTTP_200_OK
 

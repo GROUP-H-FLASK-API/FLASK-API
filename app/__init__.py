@@ -2,6 +2,7 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from app.extensions import db, migrate,jwt
 from app.controllers.auth.auth_controllers import auth
+from app.controllers.author.author_controllers import author
 #application factory function
 def create_app():
     app = Flask(__name__)
@@ -19,6 +20,7 @@ def create_app():
 
 
     app.register_blueprint(auth)
+    app.register_blueprint(author)
     #index route
     @app.route('/')
 
