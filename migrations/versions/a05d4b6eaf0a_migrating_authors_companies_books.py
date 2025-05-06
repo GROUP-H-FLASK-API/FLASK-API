@@ -1,8 +1,8 @@
-"""migrating authors, companies and books
+"""migrating authors, companies, books
 
-Revision ID: 0808dea65b9e
+Revision ID: a05d4b6eaf0a
 Revises: 
-Create Date: 2025-03-21 19:31:23.558040
+Create Date: 2025-05-06 11:37:31.810190
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '0808dea65b9e'
+revision = 'a05d4b6eaf0a'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -22,14 +22,13 @@ def upgrade():
     sa.Column('author_id', sa.Integer(), autoincrement=True, nullable=False),
     sa.Column('fname', sa.String(length=50), nullable=False),
     sa.Column('lname', sa.String(length=100), nullable=False),
-    sa.Column('contact', sa.String(length=10), nullable=False),
+    sa.Column('contact', sa.String(length=15), nullable=False),
     sa.Column('email', sa.String(length=85), nullable=False),
     sa.Column('password', sa.String(length=255), nullable=False),
     sa.Column('biography', sa.String(length=255), nullable=True),
     sa.Column('created_at', sa.DateTime(), nullable=True),
     sa.Column('updated_at', sa.DateTime(), nullable=True),
     sa.PrimaryKeyConstraint('author_id'),
-    sa.UniqueConstraint('author_id'),
     sa.UniqueConstraint('contact'),
     sa.UniqueConstraint('email')
     )
@@ -44,8 +43,6 @@ def upgrade():
     sa.Column('updated_at', sa.DateTime(), nullable=True),
     sa.ForeignKeyConstraint(['author_id'], ['authors.author_id'], ),
     sa.PrimaryKeyConstraint('company_id'),
-    sa.UniqueConstraint('author_id'),
-    sa.UniqueConstraint('company_id'),
     sa.UniqueConstraint('contact'),
     sa.UniqueConstraint('email'),
     sa.UniqueConstraint('name')
@@ -69,9 +66,6 @@ def upgrade():
     sa.ForeignKeyConstraint(['author_id'], ['authors.author_id'], ),
     sa.ForeignKeyConstraint(['company_id'], ['companies.company_id'], ),
     sa.PrimaryKeyConstraint('book_ID'),
-    sa.UniqueConstraint('author_id'),
-    sa.UniqueConstraint('book_ID'),
-    sa.UniqueConstraint('company_id'),
     sa.UniqueConstraint('isbn')
     )
     # ### end Alembic commands ###

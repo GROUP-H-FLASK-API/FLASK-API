@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 from app.status_codes import HTTP_400_BAD_REQUEST,HTTP_409_CONFLICT,HTTP_500_INTERNAL_SERVER_ERROR,HTTP_201_CREATED,HTTP_401_UNAUTHORIZED,HTTP_200_OK
 import validators
-from app.models.author_module import Author
+from app.models.author_model import Author
 from app.extensions import db,bcrypt
 from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required, create_refresh_token
 
@@ -22,8 +22,8 @@ def register_user():
     email = data.get("email")
     password = data.get("password")
     biography = data.get("biography")
-    created_at = data.get("created_at", "")
-    updated_at = data.get("updated_at", "")
+    # created_at = None
+    # updated_at = None
 
 
     #validations of the user requests
@@ -50,7 +50,7 @@ def register_user():
         hashed_password = bcrypt.generate_password_hash(password).decode("utf-8")  #hashing the password
 
         #creating an Author
-        new_author = Author(fname=fname,lname=lname,password=hashed_password,email=email,contact=contact,biography=biography,created_at=created_at,updated_at=updated_at)
+        new_author = Author(fname=fname,lname=lname,password=hashed_password,email=email,contact=contact,biography=biography)
         db.session.add(new_author)
         db.session.commit()
 
@@ -71,9 +71,16 @@ def register_user():
                                   }
                         }),HTTP_201_CREATED
 
+  
     except Exception as e:
-        db.session.rollback()
-        return jsonify({"Error":str(e)}),HTTP_500_INTERNAL_SERVER_ERROR
+        import traceback
+    print("==== ERROR TRACEBACK ====")
+    traceback.print_exc()  # prints full stack trace in terminal
+    print("==== RAW ERROR ====")
+    print(str(e))          # prints exact error message
+
+    return jsonify({"Error": str(e)}), HTTP_500_INTERNAL_SERVER_ERROR
+
     
 
 

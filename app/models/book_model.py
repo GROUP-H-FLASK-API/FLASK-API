@@ -3,9 +3,9 @@ from datetime import datetime
 
 class Book(db.Model):
     __tablename__ = "books"  #customizing the table
-    book_ID = db.Column(db.Integer,primary_key = True,unique = True,nullable = False)
-    author_id = db.Column(db.Integer, db.ForeignKey('authors.author_id'), nullable = False,unique = True)
-    company_id = db.Column(db.Integer, db.ForeignKey('companies.company_id'), nullable = False,unique = True)
+    book_ID = db.Column(db.Integer,primary_key = True,nullable = False)
+    author_id = db.Column(db.Integer, db.ForeignKey('authors.author_id'), nullable = False)
+    company_id = db.Column(db.Integer, db.ForeignKey('companies.company_id'), nullable = False)
     publication_date = db.Column(db.Integer,nullable = True)
     title = db.Column(db.String(30),nullable = False)
     pages = db.Column(db.Integer,nullable = False)
@@ -22,8 +22,8 @@ class Book(db.Model):
     author = db.relationship('Author', backref = "books")
     company = db.relationship('Company', backref = "books")
     #we use re
-    created_at = db.Column(db.DateTime, default = datetime.now())
-    updated_at = db.Column(db.DateTime, onupdate = datetime.now())
+    created_at = db.Column(db.DateTime, default = datetime.now)
+    updated_at = db.Column(db.DateTime, onupdate = datetime.now)
     
     
     def __init__(self,book_ID,author_id,publication_date,title,created_at,updated_at):

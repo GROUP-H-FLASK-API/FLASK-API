@@ -2,6 +2,7 @@ from flask import Flask
 from app.extensions import db, migrate, jwt
 from app.controllers.auth.auth_controller import auth
 from app.controllers.author.author_controller import authors
+from app.controllers.company.company_controller import companies
 
 
 def create_app(): #application factory function
@@ -15,14 +16,15 @@ def create_app(): #application factory function
 
 
     #importing and registering models
-    from app.models.author_module import Author
-    from app.models.company_module import Company
-    from app.models.book_module import Book
+    from app.models.author_model import Author
+    from app.models.company_model import Company
+    from app.models.book_model import Book
    
 
     #registering blueprints
     app.register_blueprint(auth)
     app.register_blueprint(authors)
+    app.register_blueprint(companies)
 
 
 
