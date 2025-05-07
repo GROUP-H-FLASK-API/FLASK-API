@@ -3,7 +3,7 @@ from app.extensions import db, migrate, jwt
 from app.controllers.auth.auth_controller import auth
 from app.controllers.author.author_controller import authors
 from app.controllers.company.company_controller import companies
-
+from app.controllers.book.book_controller import books
 
 def create_app(): #application factory function
     app = Flask(__name__) #instance
@@ -25,6 +25,7 @@ def create_app(): #application factory function
     app.register_blueprint(auth)
     app.register_blueprint(authors)
     app.register_blueprint(companies)
+    app.register_blueprint(books)
 
 
 

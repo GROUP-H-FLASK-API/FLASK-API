@@ -6,7 +6,6 @@ class Book(db.Model):
     book_ID = db.Column(db.Integer,primary_key = True,nullable = False)
     author_id = db.Column(db.Integer, db.ForeignKey('authors.author_id'), nullable = False)
     company_id = db.Column(db.Integer, db.ForeignKey('companies.company_id'), nullable = False)
-    publication_date = db.Column(db.Integer,nullable = True)
     title = db.Column(db.String(30),nullable = False)
     pages = db.Column(db.Integer,nullable = False)
     price = db.Column(db.Integer,nullable = False)
@@ -26,14 +25,20 @@ class Book(db.Model):
     updated_at = db.Column(db.DateTime, onupdate = datetime.now)
     
     
-    def __init__(self,book_ID,author_id,publication_date,title,created_at,updated_at):
+    def __init__(self,title,price,publication_date,pages,price_unit,genre, description,author_id,company_id,publisher,isbn = None,image = None):
         super(Book, self).__init__() #invoking the constructor of the super class
-        self.book_ID = book_ID
-        self.author_id = author_id
-        self.publication_date = publication_date
         self.title = title
-        self.created_at = created_at
-        self.updated_at = updated_at
+        self.pages = pages
+        self.publication_date = publication_date
+        self.price = price
+        self.price_unit = price_unit
+        self.genre = genre
+        self.description = description
+        self.author_id = author_id
+        self.company_id = company_id
+        self.publisher = publisher
+        self.isbn = isbn
+        self.image = image
 
     def __repr__(self) -> str:
         return f"Book {self.title}"

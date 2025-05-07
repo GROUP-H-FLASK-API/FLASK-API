@@ -16,11 +16,6 @@ authors = Blueprint('authors', __name__,
 @jwt_required()
 def getAllAuthors():
 
-
-
-    # email = request.json.get("email")
-    # password = request.json.get("password")
-
     try:
 
         all_authors = Author.query.all()
@@ -62,11 +57,11 @@ def getAuthor(author_id):
         try:
             author = Author.query.get(author_id)
 
-          #   books = []
+            books = []
             companies = []
 
-          #   if hasattr(author, "books"):
-          #        books = [{ 'id': book.book_ID, 'title':book.title,'price':book.price,'genre':book.genre, 'price_unit':book.price_unit, 'description':book.description, 'publisher':book.publisher, 'publication':book.publication_date, 'image':book.image,'created_at':book.created_at} for book in author.books]
+            if hasattr(author, "books"):
+                 books = [{ 'id': book.book_ID, 'title':book.title,'price':book.price,'genre':book.genre, 'price_unit':book.price_unit, 'description':book.description, 'publisher':book.publisher, 'publication':book.publication_date, 'image':book.image,'created_at':book.created_at} for book in author.books]
 
             if hasattr(author, "companies"):
                  companies = [{ 'id': company.company_id, 'name':company.name,'contact':company.contact,'email':company.email, 'location':company.location,'created_at':company.created_at} for company in author.companies]
@@ -87,7 +82,7 @@ def getAuthor(author_id):
                       "created_at":author.created_at,
                       "updated_at":author.updated_at,
                       "companies" : companies,
-                    #   "books": books
+                      "books": books
                       }
                  }),HTTP_200_OK
         except Exception as e:
@@ -247,8 +242,8 @@ def searchAuthors():
                 "email" : author.email,
                 "contact" : author.contact,
                 "created_at" : author.created_at,
-               #  "companies": [],
-               #  "books": []
+                "companies": [],
+                "books": []
                 }
             
             authors_data.append(author_info)
